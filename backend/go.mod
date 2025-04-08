@@ -1,4 +1,4 @@
-module admin
+module github.com/soraQaQ/blog
 
 go 1.21
 

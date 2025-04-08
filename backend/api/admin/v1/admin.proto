@@ -68,6 +68,7 @@ message RegisterReq {
   string username = 1;
   string password = 2;
   string email = 3;
+  string nickname = 4;
 }
 
 message RegisterReply {
