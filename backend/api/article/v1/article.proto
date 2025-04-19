@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package v1.article;
+
+option go_package = "api/article/v1;v1";
+
+import "google/protobuf/empty.proto";
+
+service ArticleService{
+  rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty);
+  rpc GetAllArticle(google.protobuf.Empty) returns
+}
+
+
+message Article {
+  int64 id = 1;
+  string title = 2;
+  string summary = 3;
+  string content_url = 4;
+  int64 status = 5;
+  int64 view_count = 6;
+  string tags = 7;
+}
+
+message CreateArticleRequest {
+  Article article = 1;
+}
+
+message GetAllArticleReply {
+  repeated Article articles = 1;
+}

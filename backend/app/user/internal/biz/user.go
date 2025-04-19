@@ -17,9 +17,10 @@ type User struct {
 
 type UserRepo interface {
 	Save(context.Context, *User) error
-	Get(context.Context, []uint64) ([]*User, error)
+	Get(context.Context, uint64) (*User, error)
 	Update(context.Context, *User, func(context.Context, *User) (*User, error)) error
 	GetAll(context.Context) ([]*User, error)
+	GetUserByEmail(context.Context, string) (*User, error)
 }
 
 type UserUsecase struct {
@@ -43,8 +44,8 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (err error) {
 	return nil
 }
 
-func (uc *UserUsecase) GetUser(ctx context.Context, ids []uint64) (users []*User, err error) {
-	users, err = uc.repo.Get(ctx, ids)
+func (uc *UserUsecase) GetUser(ctx context.Context, id uint64) (users *User, err error) {
+	users, err = uc.repo.Get(ctx, id)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetUser: %v", err)
 		return nil, fmt.Errorf("userUsecase.GetUser: %w", err)
@@ -68,6 +69,15 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User, updateFn func
 		return fmt.Errorf("userUsecase.UpdateUser: %w", err)
 	}
 	return nil
+}
+
+func (uc *UserUsecase) GetUserByEmail(ctx context.Context, email string) (user *User, err error) {
+	user, err = uc.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("userUsecase.GetUserByEmail: %v", err)
+		return nil, fmt.Errorf("userUsecase.GetUserByEmail: %w", err)
+	}
+	return user, nil
 }
 
 func validateUser(user *User) error {

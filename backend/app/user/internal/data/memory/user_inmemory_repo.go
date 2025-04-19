@@ -38,21 +38,15 @@ func (r *UserMemoryRepo) Create(ctx context.Context, u *biz.User) error {
 	return nil
 }
 
-func (r *UserMemoryRepo) Get(ctx context.Context, ids []uint64) ([]*biz.User, error) {
+func (r *UserMemoryRepo) Get(ctx context.Context, id uint64) (*biz.User, error) {
 	r.lock.RLock()
 	defer r.lock.RUnlock()
-	users := make([]*biz.User, 0)
-	for _, id := range ids {
-		for _, user := range r.store {
-			if user.Id == id {
-				users = append(users, user)
-			}
+	for _, user := range r.store {
+		if user.Id == id {
+			return user, nil
 		}
 	}
-	if len(users) == 0 {
-		return nil, errors.ErrUserNotFound
-	}
-	return users, nil
+	return nil, errors.ErrUserNotFound
 }
 
 func (r *UserMemoryRepo) Update(ctx context.Context, user *biz.User, updateFn func(context.Context, *biz.User) (*biz.User, error)) error {
@@ -80,4 +74,15 @@ func (r *UserMemoryRepo) GetAll(ctx context.Context) ([]*biz.User, error) {
 		return nil, errors.ErrUserNotFound
 	}
 	return r.store, nil
+}
+
+func (r *UserMemoryRepo) GetUserByEmail(ctx context.Context, email string) (*biz.User, error) {
+	r.lock.RLock()
+	defer r.lock.RUnlock()
+	for _, user := range r.store {
+		if user.Email == email {
+			return user, nil
+		}
+	}
+	return nil, errors.ErrUserNotFound
 }

@@ -48,7 +48,8 @@ message User{
 }
 
 message LoginReq {
-  User user = 1;
+  string email = 1;
+  string password = 2;
 }
 
 message LoginReply {

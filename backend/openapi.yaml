@@ -112,8 +112,10 @@ components:
         admin.v1.LoginReq:
             type: object
             properties:
-                user:
-                    $ref: '#/components/schemas/admin.v1.User'
+                email:
+                    type: string
+                password:
+                    type: string
         admin.v1.LogoutReply:
             type: object
             properties:

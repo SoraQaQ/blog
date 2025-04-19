@@ -15,6 +15,14 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 	return &UserRepo{data: data, log: log.NewHelper(logger)}
 }
 
+func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *biz.User, err error) {
+	user, err = u.data.userMemory.GetUserByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
 	err = u.data.userMemory.Create(ctx, user)
 	if err != nil {
@@ -23,8 +31,8 @@ func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
 	return nil
 }
 
-func (u *UserRepo) Get(ctx context.Context, ids []uint64) (users []*biz.User, err error) {
-	users, err = u.data.userMemory.Get(ctx, ids)
+func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err error) {
+	user, err = u.data.userMemory.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
