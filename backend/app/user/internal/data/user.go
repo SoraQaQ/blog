@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/soraQaQ/blog/app/user/internal/biz"
 )
@@ -16,7 +17,7 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 }
 
 func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *biz.User, err error) {
-	user, err = u.data.userMemory.GetUserByEmail(ctx, email)
+	user, err = u.data.db.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +25,7 @@ func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *biz.
 }
 
 func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
-	err = u.data.userMemory.Create(ctx, user)
+	err = u.data.db.Save(ctx, user)
 	if err != nil {
 		return
 	}
@@ -32,7 +33,7 @@ func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
 }
 
 func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err error) {
-	user, err = u.data.userMemory.Get(ctx, id)
+	user, err = u.data.db.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err erro
 }
 
 func (u *UserRepo) Update(ctx context.Context, user *biz.User, fn func(context.Context, *biz.User) (*biz.User, error)) (err error) {
-	err = u.data.userMemory.Update(ctx, user, fn)
+	err = u.data.db.Update(ctx, user, fn)
 	if err != nil {
 		return
 	}
@@ -48,5 +49,5 @@ func (u *UserRepo) Update(ctx context.Context, user *biz.User, fn func(context.C
 }
 
 func (u *UserRepo) GetAll(ctx context.Context) ([]*biz.User, error) {
-	return u.data.userMemory.GetAll(ctx)
+	return u.data.db.GetAll(ctx)
 }

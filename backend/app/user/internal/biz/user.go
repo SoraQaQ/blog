@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/user/internal/errors"
+	"github.com/soraQaQ/blog/pkg/errors"
 )
 
 type User struct {
