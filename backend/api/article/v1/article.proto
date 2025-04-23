@@ -4,11 +4,41 @@ package v1.article;
 
 option go_package = "api/article/v1;v1";
 
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 service ArticleService{
-  rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty);
-  rpc GetAllArticle(google.protobuf.Empty) returns
+  rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "api/v1/article/create",
+      body: "*",
+    };
+  }
+
+  rpc GetAllArticle(google.protobuf.Empty) returns (GetAllArticleReply) {
+    option (google.api.http) = {
+      get: "api/v1/article/getAllArticle",
+    };
+  }
+
+  rpc GetArticleById(GetArticleByIdRequest) returns (GetArticleByIdReply) {
+    option (google.api.http) = {
+      get: "api/v1/article/getArticleById",
+    };
+  }
+
+  rpc GetArticlesByTag(GetArticlesByTagRequest) returns (GetArticlesByTagReply) {
+    option (google.api.http) = {
+      get: "api/v1/article/getArticleByTag",
+    };
+  }
+
+  rpc UpdateArticle(UpdateArticleRequest) returns (UpdateArticleReply) {
+    option (google.api.http) = {
+      post: "api/v1/article/update",
+      body: "*",
+    };
+  }
 }
 
 
@@ -20,6 +50,7 @@ message Article {
   int64 status = 5;
   int64 view_count = 6;
   string tags = 7;
+  repeated string image_url = 8;
 }
 
 message CreateArticleRequest {
@@ -29,3 +60,29 @@ message CreateArticleRequest {
 message GetAllArticleReply {
   repeated Article articles = 1;
 }
+
+message GetArticleByIdRequest {
+  int64 id = 1;
+}
+
+message GetArticleByIdReply {
+  Article article = 1;
+}
+
+message GetArticlesByTagRequest {
+  string tags = 1;
+}
+
+message GetArticlesByTagReply {
+  repeated Article articles = 1;
+}
+
+message UpdateArticleRequest {
+  Article article = 1;
+}
+
+message UpdateArticleReply {
+  string message = 1;
+  string success = 2;
+}
+

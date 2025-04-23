@@ -2,10 +2,11 @@ package memory
 
 import (
 	"context"
+	"sync"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/soraQaQ/blog/app/user/internal/biz"
-	"github.com/soraQaQ/blog/app/user/internal/errors"
-	"sync"
+	"github.com/soraQaQ/blog/pkg/errors"
 )
 
 type UserMemoryRepo struct {
@@ -13,6 +14,8 @@ type UserMemoryRepo struct {
 	log   *log.Helper
 	lock  *sync.RWMutex
 }
+
+var UserRepo = (*UserMemoryRepo)(nil)
 
 func NewUserMemoryRepo(logger log.Logger) *UserMemoryRepo {
 	s := make([]*biz.User, 0)
@@ -23,7 +26,7 @@ func NewUserMemoryRepo(logger log.Logger) *UserMemoryRepo {
 	}
 }
 
-func (r *UserMemoryRepo) Create(ctx context.Context, u *biz.User) error {
+func (r *UserMemoryRepo) Save(ctx context.Context, u *biz.User) error {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	newUser := &biz.User{
@@ -32,6 +35,10 @@ func (r *UserMemoryRepo) Create(ctx context.Context, u *biz.User) error {
 		Nickname: u.Nickname,
 		Password: u.Password,
 		Email:    u.Email,
+	}
+	user, _ := r.GetUserByEmail(ctx, u.Email)
+	if user != nil {
+		return errors.ErrEmailExists
 	}
 	r.store = append(r.store, newUser)
 	r.log.WithContext(ctx).Infof("Create: %v", newUser)
@@ -70,9 +77,8 @@ func (r *UserMemoryRepo) Update(ctx context.Context, user *biz.User, updateFn fu
 }
 
 func (r *UserMemoryRepo) GetAll(ctx context.Context) ([]*biz.User, error) {
-	if len(r.store) == 0 {
-		return nil, errors.ErrUserNotFound
-	}
+	r.lock.RLock()
+	defer r.lock.RUnlock()
 	return r.store, nil
 }
 
@@ -84,5 +90,5 @@ func (r *UserMemoryRepo) GetUserByEmail(ctx context.Context, email string) (*biz
 			return user, nil
 		}
 	}
-	return nil, errors.ErrUserNotFound
+	return nil, errors.WarpUserEmailError(errors.ErrInvalidEmail, email)
 }
