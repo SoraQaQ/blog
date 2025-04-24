@@ -98,6 +98,17 @@ func (uc *ArticleUsecase) CreateArticle(ctx context.Context, article *Article) (
 	return newArticle, nil
 }
 
+func (uc *ArticleUsecase) UpdateArticle(ctx context.Context, article *Article, updateFn func(context.Context, *Article) (*Article, error)) error {
+	if err := validateArticle(article); err != nil {
+		return err
+	}
+	err := uc.repo.Update(ctx, article, updateFn)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func validateArticle(article *Article) error {
 	if article == nil {
 		return fmt.Errorf("article is nil")

@@ -72,7 +72,7 @@ paths:
         get:
             tags:
                 - ArticleService
-            operationId: ArticleService_GetArticleByTags
+            operationId: ArticleService_GetArticlesByTag
             parameters:
                 - name: tags
                   in: query
@@ -84,7 +84,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetArticleByTagsReply'
+                                $ref: '#/components/schemas/GetArticlesByTagReply'
                 default:
                     description: Default error response
                     content:
@@ -92,7 +92,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Status'
     api/v1/article/update:
-        post:
+        put:
             tags:
                 - ArticleService
             operationId: ArticleService_UpdateArticle
@@ -155,7 +155,7 @@ components:
             properties:
                 article:
                     $ref: '#/components/schemas/Article'
-        GetArticleByTagsReply:
+        GetArticlesByTagReply:
             type: object
             properties:
                 articles:

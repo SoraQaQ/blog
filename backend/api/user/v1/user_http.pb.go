@@ -27,7 +27,7 @@ type UserServiceHTTPServer interface {
 
 func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("api/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
+	r.PUT("api/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
 }
 
 func _UserService_UpdateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
@@ -70,7 +70,7 @@ func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateRe
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceUpdateUser))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
