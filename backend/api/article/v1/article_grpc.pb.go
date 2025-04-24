@@ -23,7 +23,7 @@ const (
 	ArticleService_CreateArticle_FullMethodName    = "/v1.article.ArticleService/CreateArticle"
 	ArticleService_GetAllArticle_FullMethodName    = "/v1.article.ArticleService/GetAllArticle"
 	ArticleService_GetArticleById_FullMethodName   = "/v1.article.ArticleService/GetArticleById"
-	ArticleService_GetArticleByTags_FullMethodName = "/v1.article.ArticleService/GetArticleByTags"
+	ArticleService_GetArticlesByTag_FullMethodName = "/v1.article.ArticleService/GetArticlesByTag"
 	ArticleService_UpdateArticle_FullMethodName    = "/v1.article.ArticleService/UpdateArticle"
 )
 
@@ -34,7 +34,7 @@ type ArticleServiceClient interface {
 	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetAllArticle(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllArticleReply, error)
 	GetArticleById(ctx context.Context, in *GetArticleByIdRequest, opts ...grpc.CallOption) (*GetArticleByIdReply, error)
-	GetArticleByTags(ctx context.Context, in *GetArticleByTagsRequest, opts ...grpc.CallOption) (*GetArticleByTagsReply, error)
+	GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*GetArticlesByTagReply, error)
 	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*UpdateArticleReply, error)
 }
 
@@ -76,10 +76,10 @@ func (c *articleServiceClient) GetArticleById(ctx context.Context, in *GetArticl
 	return out, nil
 }
 
-func (c *articleServiceClient) GetArticleByTags(ctx context.Context, in *GetArticleByTagsRequest, opts ...grpc.CallOption) (*GetArticleByTagsReply, error) {
+func (c *articleServiceClient) GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*GetArticlesByTagReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetArticleByTagsReply)
-	err := c.cc.Invoke(ctx, ArticleService_GetArticleByTags_FullMethodName, in, out, cOpts...)
+	out := new(GetArticlesByTagReply)
+	err := c.cc.Invoke(ctx, ArticleService_GetArticlesByTag_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ type ArticleServiceServer interface {
 	CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error)
 	GetAllArticle(context.Context, *emptypb.Empty) (*GetAllArticleReply, error)
 	GetArticleById(context.Context, *GetArticleByIdRequest) (*GetArticleByIdReply, error)
-	GetArticleByTags(context.Context, *GetArticleByTagsRequest) (*GetArticleByTagsReply, error)
+	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*GetArticlesByTagReply, error)
 	UpdateArticle(context.Context, *UpdateArticleRequest) (*UpdateArticleReply, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
@@ -124,8 +124,8 @@ func (UnimplementedArticleServiceServer) GetAllArticle(context.Context, *emptypb
 func (UnimplementedArticleServiceServer) GetArticleById(context.Context, *GetArticleByIdRequest) (*GetArticleByIdReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticleById not implemented")
 }
-func (UnimplementedArticleServiceServer) GetArticleByTags(context.Context, *GetArticleByTagsRequest) (*GetArticleByTagsReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticleByTags not implemented")
+func (UnimplementedArticleServiceServer) GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*GetArticlesByTagReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticlesByTag not implemented")
 }
 func (UnimplementedArticleServiceServer) UpdateArticle(context.Context, *UpdateArticleRequest) (*UpdateArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
@@ -205,20 +205,20 @@ func _ArticleService_GetArticleById_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ArticleService_GetArticleByTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArticleByTagsRequest)
+func _ArticleService_GetArticlesByTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticlesByTagRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArticleServiceServer).GetArticleByTags(ctx, in)
+		return srv.(ArticleServiceServer).GetArticlesByTag(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ArticleService_GetArticleByTags_FullMethodName,
+		FullMethod: ArticleService_GetArticlesByTag_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).GetArticleByTags(ctx, req.(*GetArticleByTagsRequest))
+		return srv.(ArticleServiceServer).GetArticlesByTag(ctx, req.(*GetArticlesByTagRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -261,8 +261,8 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ArticleService_GetArticleById_Handler,
 		},
 		{
-			MethodName: "GetArticleByTags",
-			Handler:    _ArticleService_GetArticleByTags_Handler,
+			MethodName: "GetArticlesByTag",
+			Handler:    _ArticleService_GetArticlesByTag_Handler,
 		},
 		{
 			MethodName: "UpdateArticle",

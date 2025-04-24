@@ -45,6 +45,9 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (err error) {
 }
 
 func (uc *UserUsecase) GetUser(ctx context.Context, id uint64) (users *User, err error) {
+	if id <= 0 {
+		return nil, fmt.Errorf("invalid user id")
+	}
 	users, err = uc.repo.Get(ctx, id)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetUser: %v", err)
@@ -63,6 +66,9 @@ func (uc *UserUsecase) GetAllUsers(ctx context.Context) (users []*User, err erro
 }
 
 func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User, updateFn func(context.Context, *User) (*User, error)) (err error) {
+	if err = validateUser(user); err != nil {
+		return err
+	}
 	err = uc.repo.Update(ctx, user, updateFn)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.UpdateUser: %v", err)
@@ -72,6 +78,9 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User, updateFn func
 }
 
 func (uc *UserUsecase) GetUserByEmail(ctx context.Context, email string) (user *User, err error) {
+	if email == "" {
+		return nil, fmt.Errorf("invalid email")
+	}
 	user, err = uc.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetUserByEmail: %v", err)

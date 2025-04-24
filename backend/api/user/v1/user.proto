@@ -13,7 +13,7 @@ service UserService {
   rpc GetAllUser(google.protobuf.Empty) returns (GetUserAllReply);
   rpc UpdateUser(UpdateRequest) returns (UpdateReply) {
     option (google.api.http) = {
-      post: "api/v1/user/update",
+      put: "api/v1/user/update",
       body: "*",
     };
   }
