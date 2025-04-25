@@ -3,6 +3,11 @@ package biz
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"time"
+
+	"github.com/soraQaQ/blog/pkg/util"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/soraQaQ/blog/pkg/errors"
 )
@@ -33,15 +38,33 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 }
 
 func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (err error) {
+	uc.log.Debugf("create user: %v", user)
 	if err = validateUser(user); err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.CreateUser: %v", err)
 		return
 	}
-	err = uc.repo.Save(ctx, user)
+	hashPassword, err := util.HashPassword(user.Password)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("userUsecase.CreateUser: %v", err)
+		return
+	}
+
+	uc.log.Debugf("hash password: %v", hashPassword)
+	uc.log.Debugf("user: %v", user)
+	newUser := &User{
+		Id:       uint64(time.Now().UnixNano()),
+		Username: user.Username,
+		Nickname: user.Nickname,
+		Password: hashPassword,
+		Email:    user.Email,
+	}
+
+	err = uc.repo.Save(ctx, newUser)
+	uc.log.WithContext(ctx).Debugf("memory save success: %v", err)
 	if err != nil {
 		return
 	}
-	return nil
+	return
 }
 
 func (uc *UserUsecase) GetUser(ctx context.Context, id uint64) (users *User, err error) {
@@ -53,7 +76,7 @@ func (uc *UserUsecase) GetUser(ctx context.Context, id uint64) (users *User, err
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetUser: %v", err)
 		return nil, fmt.Errorf("userUsecase.GetUser: %w", err)
 	}
-	return users, nil
+	return
 }
 
 func (uc *UserUsecase) GetAllUsers(ctx context.Context) (users []*User, err error) {
@@ -62,31 +85,46 @@ func (uc *UserUsecase) GetAllUsers(ctx context.Context) (users []*User, err erro
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetAllUsers: %v", err)
 		return nil, fmt.Errorf("userUsecase.GetAllUsers: %w", err)
 	}
-	return users, nil
+	return
 }
 
 func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User, updateFn func(context.Context, *User) (*User, error)) (err error) {
-	if err = validateUser(user); err != nil {
-		return err
+	//if err = validateUser(user); err != nil {
+	//	return err
+	//}
+
+	oldUser, err := uc.GetUser(ctx, user.Id)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("userUsecase.UpdateUser: %v", err)
+		return errors.ErrUserNotFound
 	}
+
+	user = &User{
+		Id:       user.Id,
+		Username: user.Username,
+		Nickname: user.Nickname,
+		Password: oldUser.Password,
+		Email:    oldUser.Email,
+	}
+
 	err = uc.repo.Update(ctx, user, updateFn)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.UpdateUser: %v", err)
 		return fmt.Errorf("userUsecase.UpdateUser: %w", err)
 	}
-	return nil
+	return
 }
 
 func (uc *UserUsecase) GetUserByEmail(ctx context.Context, email string) (user *User, err error) {
-	if email == "" {
-		return nil, fmt.Errorf("invalid email")
+	if err = validateEmail(email); err != nil {
+		return nil, err
 	}
 	user, err = uc.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.GetUserByEmail: %v", err)
 		return nil, fmt.Errorf("userUsecase.GetUserByEmail: %w", err)
 	}
-	return user, nil
+	return
 }
 
 func validateUser(user *User) error {
@@ -96,8 +134,30 @@ func validateUser(user *User) error {
 	if user.Password == "" {
 		return errors.ErrInvalidPassword
 	}
-	if user.Email == "" {
+	if err := validateEmail(user.Email); err != nil {
+		return err
+	}
+	if user.Id <= 0 {
+		return errors.ErrorArticleInvalid
+	}
+	return nil
+}
+
+func validateEmail(email string) error {
+	if email == "" {
 		return errors.ErrInvalidEmail
 	}
+
+	// 使用正则表达式验证邮箱格式
+	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	matched, err := regexp.MatchString(pattern, email)
+	if err != nil {
+		return fmt.Errorf("验证邮箱格式时发生错误: %w", err)
+	}
+
+	if !matched {
+		return errors.ErrInvalidEmail
+	}
+
 	return nil
 }

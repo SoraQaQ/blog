@@ -8,35 +8,41 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 service ArticleService{
-  rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty) {
+  rpc CreateArticle(Article) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "api/v1/article/create",
+      post: "api/v1/article",
       body: "*",
     };
   }
 
   rpc GetAllArticle(google.protobuf.Empty) returns (GetAllArticleReply) {
     option (google.api.http) = {
-      get: "api/v1/article/getAllArticle",
+      get: "api/v1/articles",
     };
   }
 
   rpc GetArticleById(GetArticleByIdRequest) returns (GetArticleByIdReply) {
     option (google.api.http) = {
-      get: "api/v1/article/getArticleById",
+      get: "api/v1/article/{id}",
     };
   }
 
   rpc GetArticlesByTag(GetArticlesByTagRequest) returns (GetArticlesByTagReply) {
     option (google.api.http) = {
-      get: "api/v1/article/getArticleByTag",
+      get: "/api/v1/articles/bytag"
     };
   }
 
-  rpc UpdateArticle(UpdateArticleRequest) returns (UpdateArticleReply) {
+  rpc UpdateArticle(Article) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "api/v1/article/update",
+      put: "api/v1/article/{id}",
       body: "*",
+    };
+  }
+
+  rpc DeleteArticle(DeleteArticleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "api/v1/article/{id}",
     };
   }
 }
@@ -53,12 +59,9 @@ message Article {
   repeated string image_url = 8;
 }
 
-message CreateArticleRequest {
-  Article article = 1;
-}
-
 message GetAllArticleReply {
   repeated Article articles = 1;
+  int64 total = 2;
 }
 
 message GetArticleByIdRequest {
@@ -70,19 +73,14 @@ message GetArticleByIdReply {
 }
 
 message GetArticlesByTagRequest {
-  string tags = 1;
+  string tag = 1;
 }
 
 message GetArticlesByTagReply {
   repeated Article articles = 1;
 }
 
-message UpdateArticleRequest {
-  Article article = 1;
-}
 
-message UpdateArticleReply {
-  string message = 1;
-  string success = 2;
+message DeleteArticleRequest {
+  int64 id = 1;
 }
-

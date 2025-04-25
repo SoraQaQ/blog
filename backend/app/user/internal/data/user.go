@@ -29,13 +29,13 @@ func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
 	if err != nil {
 		return
 	}
-	return nil
+	return
 }
 
 func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err error) {
 	user, err = u.data.db.Get(ctx, id)
 	if err != nil {
-		return nil, err
+		return
 	}
 	return
 }

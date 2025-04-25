@@ -21,31 +21,34 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationArticleServiceCreateArticle = "/v1.article.ArticleService/CreateArticle"
+const OperationArticleServiceDeleteArticle = "/v1.article.ArticleService/DeleteArticle"
 const OperationArticleServiceGetAllArticle = "/v1.article.ArticleService/GetAllArticle"
 const OperationArticleServiceGetArticleById = "/v1.article.ArticleService/GetArticleById"
 const OperationArticleServiceGetArticlesByTag = "/v1.article.ArticleService/GetArticlesByTag"
 const OperationArticleServiceUpdateArticle = "/v1.article.ArticleService/UpdateArticle"
 
 type ArticleServiceHTTPServer interface {
-	CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error)
+	CreateArticle(context.Context, *Article) (*emptypb.Empty, error)
+	DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error)
 	GetAllArticle(context.Context, *emptypb.Empty) (*GetAllArticleReply, error)
 	GetArticleById(context.Context, *GetArticleByIdRequest) (*GetArticleByIdReply, error)
 	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*GetArticlesByTagReply, error)
-	UpdateArticle(context.Context, *UpdateArticleRequest) (*UpdateArticleReply, error)
+	UpdateArticle(context.Context, *Article) (*emptypb.Empty, error)
 }
 
 func RegisterArticleServiceHTTPServer(s *http.Server, srv ArticleServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("api/v1/article/create", _ArticleService_CreateArticle0_HTTP_Handler(srv))
-	r.GET("api/v1/article/getAllArticle", _ArticleService_GetAllArticle0_HTTP_Handler(srv))
-	r.GET("api/v1/article/getArticleById", _ArticleService_GetArticleById0_HTTP_Handler(srv))
-	r.GET("api/v1/article/getArticleByTag", _ArticleService_GetArticlesByTag0_HTTP_Handler(srv))
-	r.PUT("api/v1/article/update", _ArticleService_UpdateArticle0_HTTP_Handler(srv))
+	r.POST("api/v1/article", _ArticleService_CreateArticle0_HTTP_Handler(srv))
+	r.GET("api/v1/articles", _ArticleService_GetAllArticle0_HTTP_Handler(srv))
+	r.GET("api/v1/article/{id}", _ArticleService_GetArticleById0_HTTP_Handler(srv))
+	r.GET("/api/v1/articles/bytag", _ArticleService_GetArticlesByTag0_HTTP_Handler(srv))
+	r.PUT("api/v1/article/{id}", _ArticleService_UpdateArticle0_HTTP_Handler(srv))
+	r.DELETE("api/v1/article/{id}", _ArticleService_DeleteArticle0_HTTP_Handler(srv))
 }
 
 func _ArticleService_CreateArticle0_HTTP_Handler(srv ArticleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in CreateArticleRequest
+		var in Article
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
@@ -54,7 +57,7 @@ func _ArticleService_CreateArticle0_HTTP_Handler(srv ArticleServiceHTTPServer) f
 		}
 		http.SetOperation(ctx, OperationArticleServiceCreateArticle)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.CreateArticle(ctx, req.(*CreateArticleRequest))
+			return srv.CreateArticle(ctx, req.(*Article))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -88,6 +91,9 @@ func _ArticleService_GetArticleById0_HTTP_Handler(srv ArticleServiceHTTPServer) 
 	return func(ctx http.Context) error {
 		var in GetArticleByIdRequest
 		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationArticleServiceGetArticleById)
@@ -124,32 +130,58 @@ func _ArticleService_GetArticlesByTag0_HTTP_Handler(srv ArticleServiceHTTPServer
 
 func _ArticleService_UpdateArticle0_HTTP_Handler(srv ArticleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in UpdateArticleRequest
+		var in Article
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationArticleServiceUpdateArticle)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UpdateArticle(ctx, req.(*UpdateArticleRequest))
+			return srv.UpdateArticle(ctx, req.(*Article))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*UpdateArticleReply)
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _ArticleService_DeleteArticle0_HTTP_Handler(srv ArticleServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DeleteArticleRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationArticleServiceDeleteArticle)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeleteArticle(ctx, req.(*DeleteArticleRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type ArticleServiceHTTPClient interface {
-	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	CreateArticle(ctx context.Context, req *Article, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetAllArticle(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *GetAllArticleReply, err error)
 	GetArticleById(ctx context.Context, req *GetArticleByIdRequest, opts ...http.CallOption) (rsp *GetArticleByIdReply, err error)
 	GetArticlesByTag(ctx context.Context, req *GetArticlesByTagRequest, opts ...http.CallOption) (rsp *GetArticlesByTagReply, err error)
-	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http.CallOption) (rsp *UpdateArticleReply, err error)
+	UpdateArticle(ctx context.Context, req *Article, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type ArticleServiceHTTPClientImpl struct {
@@ -160,9 +192,9 @@ func NewArticleServiceHTTPClient(client *http.Client) ArticleServiceHTTPClient {
 	return &ArticleServiceHTTPClientImpl{client}
 }
 
-func (c *ArticleServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *ArticleServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *Article, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "api/v1/article/create"
+	pattern := "api/v1/article"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationArticleServiceCreateArticle))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -173,9 +205,22 @@ func (c *ArticleServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *Cr
 	return &out, nil
 }
 
+func (c *ArticleServiceHTTPClientImpl) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "api/v1/article/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationArticleServiceDeleteArticle))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (c *ArticleServiceHTTPClientImpl) GetAllArticle(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetAllArticleReply, error) {
 	var out GetAllArticleReply
-	pattern := "api/v1/article/getAllArticle"
+	pattern := "api/v1/articles"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationArticleServiceGetAllArticle))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -188,7 +233,7 @@ func (c *ArticleServiceHTTPClientImpl) GetAllArticle(ctx context.Context, in *em
 
 func (c *ArticleServiceHTTPClientImpl) GetArticleById(ctx context.Context, in *GetArticleByIdRequest, opts ...http.CallOption) (*GetArticleByIdReply, error) {
 	var out GetArticleByIdReply
-	pattern := "api/v1/article/getArticleById"
+	pattern := "api/v1/article/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationArticleServiceGetArticleById))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -201,7 +246,7 @@ func (c *ArticleServiceHTTPClientImpl) GetArticleById(ctx context.Context, in *G
 
 func (c *ArticleServiceHTTPClientImpl) GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...http.CallOption) (*GetArticlesByTagReply, error) {
 	var out GetArticlesByTagReply
-	pattern := "api/v1/article/getArticleByTag"
+	pattern := "/api/v1/articles/bytag"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationArticleServiceGetArticlesByTag))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -212,9 +257,9 @@ func (c *ArticleServiceHTTPClientImpl) GetArticlesByTag(ctx context.Context, in 
 	return &out, nil
 }
 
-func (c *ArticleServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...http.CallOption) (*UpdateArticleReply, error) {
-	var out UpdateArticleReply
-	pattern := "api/v1/article/update"
+func (c *ArticleServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *Article, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "api/v1/article/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationArticleServiceUpdateArticle))
 	opts = append(opts, http.PathTemplate(pattern))

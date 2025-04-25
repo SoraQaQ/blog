@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/soraQaQ/blog/pkg/errors"
 )
 
 type Article struct {
@@ -11,14 +12,14 @@ type Article struct {
 	Title      string
 	Summary    string
 	ContentUrl string
-	status     int64
+	Status     int64
 	ViewCount  int64
 	Tags       string
 	ImageUrl   []string
 }
 
 type ArticleRepo interface {
-	Save(context.Context, *Article) (*Article, error)
+	Save(context.Context, *Article) error
 	Get(context.Context, int64) (*Article, error)
 	Update(context.Context, *Article, func(context.Context, *Article) (*Article, error)) error
 	GetAll(context.Context) ([]*Article, error)
@@ -45,7 +46,7 @@ func (uc *ArticleUsecase) GetAllArticles(ctx context.Context) ([]*Article, error
 
 func (uc *ArticleUsecase) GetArticlesByTag(ctx context.Context, tag string) ([]*Article, error) {
 	if tag == "" {
-		return nil, fmt.Errorf("empty tag")
+		return nil, errors.ErrorArticleEmptyTag
 	}
 	articles, err := uc.repo.GetArticlesByTag(ctx, tag)
 	if err != nil {
@@ -56,7 +57,7 @@ func (uc *ArticleUsecase) GetArticlesByTag(ctx context.Context, tag string) ([]*
 
 func (uc *ArticleUsecase) Get(ctx context.Context, id int64) (*Article, error) {
 	if id <= 0 {
-		return nil, fmt.Errorf("invalid id")
+		return nil, errors.ErrorArticleID
 	}
 	article, err := uc.repo.Get(ctx, id)
 	if err != nil {
@@ -67,7 +68,7 @@ func (uc *ArticleUsecase) Get(ctx context.Context, id int64) (*Article, error) {
 
 func (uc *ArticleUsecase) DeleteArticle(ctx context.Context, id int64) error {
 	if id <= 0 {
-		return fmt.Errorf("invalid id")
+		return errors.ErrorArticleID
 	}
 
 	article, err := uc.repo.Get(ctx, id)
@@ -87,15 +88,15 @@ func (uc *ArticleUsecase) DeleteArticle(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (uc *ArticleUsecase) CreateArticle(ctx context.Context, article *Article) (*Article, error) {
-	if err := validateArticle(article); err != nil {
-		return nil, err
+func (uc *ArticleUsecase) CreateArticle(ctx context.Context, article *Article) (err error) {
+	if err = validateArticle(article); err != nil {
+		return
 	}
-	newArticle, err := uc.repo.Save(ctx, article)
+	err = uc.repo.Save(ctx, article)
 	if err != nil {
-		return nil, err
+		return
 	}
-	return newArticle, nil
+	return
 }
 
 func (uc *ArticleUsecase) UpdateArticle(ctx context.Context, article *Article, updateFn func(context.Context, *Article) (*Article, error)) error {
@@ -111,19 +112,19 @@ func (uc *ArticleUsecase) UpdateArticle(ctx context.Context, article *Article, u
 
 func validateArticle(article *Article) error {
 	if article == nil {
-		return fmt.Errorf("article is nil")
+		return errors.ErrorArticleNil
 	}
 	if article.Id <= 0 {
-		return fmt.Errorf("invalid id, id must be greater than zero")
+		return errors.ErrorArticleID
 	}
 	if article.Title == "" {
-		return fmt.Errorf("invalid title, title is empty")
+		return errors.ErrorArticleEmptyTitle
 	}
 	if article.Summary == "" {
-		return fmt.Errorf("invalid summary, summary is empty")
+		return errors.ErrorArticleEmptySummary
 	}
 	if article.ContentUrl == "" {
-		return fmt.Errorf("invalid content_url, content_url is empty")
+		return errors.ErrorArticleEmptyContent
 	}
 	return nil
 }

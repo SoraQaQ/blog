@@ -10,6 +10,7 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,38 +23,41 @@ const _ = http.SupportPackageIsVersion1
 const OperationUserServiceUpdateUser = "/user.v1.UserService/UpdateUser"
 
 type UserServiceHTTPServer interface {
-	UpdateUser(context.Context, *UpdateRequest) (*UpdateReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 }
 
 func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r := s.Route("/")
-	r.PUT("api/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
+	r.PUT("api/v1/user/{id}", _UserService_UpdateUser0_HTTP_Handler(srv))
 }
 
 func _UserService_UpdateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in UpdateRequest
+		var in UpdateUserRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationUserServiceUpdateUser)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.UpdateUser(ctx, req.(*UpdateRequest))
+			return srv.UpdateUser(ctx, req.(*UpdateUserRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*UpdateReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type UserServiceHTTPClient interface {
-	UpdateUser(ctx context.Context, req *UpdateRequest, opts ...http.CallOption) (rsp *UpdateReply, err error)
+	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type UserServiceHTTPClientImpl struct {
@@ -64,9 +68,9 @@ func NewUserServiceHTTPClient(client *http.Client) UserServiceHTTPClient {
 	return &UserServiceHTTPClientImpl{client}
 }
 
-func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateRequest, opts ...http.CallOption) (*UpdateReply, error) {
-	var out UpdateReply
-	pattern := "api/v1/user/update"
+func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "api/v1/user/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceUpdateUser))
 	opts = append(opts, http.PathTemplate(pattern))

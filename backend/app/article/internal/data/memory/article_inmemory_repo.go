@@ -24,7 +24,7 @@ func NewArticleMemoryRepo(logger log.Logger) *ArticleMemory {
 	}
 }
 
-func (a *ArticleMemory) Save(ctx context.Context, article *biz.Article) (*biz.Article, error) {
+func (a *ArticleMemory) Save(ctx context.Context, article *biz.Article) error {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 	newArticle := &biz.Article{
@@ -38,7 +38,7 @@ func (a *ArticleMemory) Save(ctx context.Context, article *biz.Article) (*biz.Ar
 	}
 	a.store = append(a.store, newArticle)
 	a.log.Infof("create article %+v", newArticle)
-	return newArticle, nil
+	return nil
 }
 
 func (a *ArticleMemory) Get(ctx context.Context, id int64) (*biz.Article, error) {

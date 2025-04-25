@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"os"
+
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -10,15 +12,16 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/soraQaQ/blog/app/user/internal/conf"
-	"os"
 
+	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
+	"github.com/hashicorp/consul/api"
 	_ "go.uber.org/automaxprocs"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "user.service"
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
@@ -32,6 +35,12 @@ func init() {
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+	client, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		panic(err)
+	}
+	reg := consul.New(client)
+
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -42,6 +51,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			gs,
 			hs,
 		),
+		kratos.Registrar(reg),
 	)
 }
 

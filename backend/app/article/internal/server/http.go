@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -11,8 +10,6 @@ import (
 	v1 "github.com/soraQaQ/blog/api/article/v1"
 	"github.com/soraQaQ/blog/app/article/internal/conf"
 	"github.com/soraQaQ/blog/app/article/internal/service"
-	"github.com/soraQaQ/blog/pkg/auth"
-	myMiddleware "github.com/soraQaQ/blog/pkg/middleware"
 )
 
 // NewHTTPServer new a HTTP server.
@@ -23,7 +20,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger, article *service.ArticleSe
 			tracing.Server(),
 			logging.Server(logger),
 			validate.Validator(),
-			middleware.Chain(myMiddleware.JWTAuth(auth.NewJWT("soraQaQ"))),
+
 		),
 	}
 	if c.Http.Network != "" {

@@ -6,75 +6,13 @@ info:
     title: ArticleService API
     version: 0.0.1
 paths:
-    api/v1/article/create:
-        post:
-            tags:
-                - ArticleService
-            operationId: ArticleService_CreateArticle
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateArticleRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    api/v1/article/getAllArticle:
-        get:
-            tags:
-                - ArticleService
-            operationId: ArticleService_GetAllArticle
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetAllArticleReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    api/v1/article/getArticleById:
-        get:
-            tags:
-                - ArticleService
-            operationId: ArticleService_GetArticleById
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetArticleByIdReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    api/v1/article/getArticleByTag:
+    /api/v1/articles/bytag:
         get:
             tags:
                 - ArticleService
             operationId: ArticleService_GetArticlesByTag
             parameters:
-                - name: tags
+                - name: tag
                   in: query
                   schema:
                     type: string
@@ -91,24 +29,109 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    api/v1/article/update:
-        put:
+    api/v1/article:
+        post:
             tags:
                 - ArticleService
-            operationId: ArticleService_UpdateArticle
+            operationId: ArticleService_CreateArticle
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateArticleRequest'
+                            $ref: '#/components/schemas/Article'
                 required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    api/v1/article/{id}:
+        get:
+            tags:
+                - ArticleService
+            operationId: ArticleService_GetArticleById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateArticleReply'
+                                $ref: '#/components/schemas/GetArticleByIdReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - ArticleService
+            operationId: ArticleService_UpdateArticle
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Article'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - ArticleService
+            operationId: ArticleService_DeleteArticle
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    api/v1/articles:
+        get:
+            tags:
+                - ArticleService
+            operationId: ArticleService_GetAllArticle
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAllArticleReply'
                 default:
                     description: Default error response
                     content:
@@ -138,11 +161,6 @@ components:
                     type: array
                     items:
                         type: string
-        CreateArticleRequest:
-            type: object
-            properties:
-                article:
-                    $ref: '#/components/schemas/Article'
         GetAllArticleReply:
             type: object
             properties:
@@ -150,6 +168,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Article'
+                total:
+                    type: string
         GetArticleByIdReply:
             type: object
             properties:
@@ -186,17 +206,5 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateArticleReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                success:
-                    type: string
-        UpdateArticleRequest:
-            type: object
-            properties:
-                article:
-                    $ref: '#/components/schemas/Article'
 tags:
     - name: ArticleService

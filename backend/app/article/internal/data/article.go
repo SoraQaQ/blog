@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/soraQaQ/blog/app/article/internal/biz"
 )
@@ -11,16 +12,19 @@ type ArticleRepo struct {
 	log  *log.Helper
 }
 
-func NewUserRepo(data *Data, logger log.Logger) biz.ArticleRepo {
-	return &ArticleRepo{data: data, log: log.NewHelper(logger)}
+func NewArticleRepo(data *Data, logger log.Logger) biz.ArticleRepo {
+	return &ArticleRepo{
+		data: data,
+		log:  log.NewHelper(logger),
+	}
 }
 
-func (a *ArticleRepo) Save(ctx context.Context, article *biz.Article) (*biz.Article, error) {
-	newArticle, err := a.data.db.Save(ctx, article)
+func (a *ArticleRepo) Save(ctx context.Context, article *biz.Article) (err error) {
+	err = a.data.db.Save(ctx, article)
 	if err != nil {
-		return nil, err
+		return
 	}
-	return newArticle, nil
+	return
 }
 
 func (a *ArticleRepo) Update(ctx context.Context, article *biz.Article, f func(context.Context, *biz.Article) (*biz.Article, error)) error {

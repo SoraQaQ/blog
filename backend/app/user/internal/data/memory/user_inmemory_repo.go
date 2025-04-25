@@ -15,8 +15,6 @@ type UserMemoryRepo struct {
 	lock  *sync.RWMutex
 }
 
-var UserRepo = (*UserMemoryRepo)(nil)
-
 func NewUserMemoryRepo(logger log.Logger) *UserMemoryRepo {
 	s := make([]*biz.User, 0)
 	return &UserMemoryRepo{
@@ -26,7 +24,8 @@ func NewUserMemoryRepo(logger log.Logger) *UserMemoryRepo {
 	}
 }
 
-func (r *UserMemoryRepo) Save(ctx context.Context, u *biz.User) error {
+func (r *UserMemoryRepo) Save(ctx context.Context, u *biz.User) (err error) {
+	r.log.Infof("Save")
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	newUser := &biz.User{
@@ -36,13 +35,9 @@ func (r *UserMemoryRepo) Save(ctx context.Context, u *biz.User) error {
 		Password: u.Password,
 		Email:    u.Email,
 	}
-	user, _ := r.GetUserByEmail(ctx, u.Email)
-	if user != nil {
-		return errors.ErrEmailExists
-	}
 	r.store = append(r.store, newUser)
 	r.log.WithContext(ctx).Infof("Create: %v", newUser)
-	return nil
+	return
 }
 
 func (r *UserMemoryRepo) Get(ctx context.Context, id uint64) (*biz.User, error) {
@@ -83,6 +78,7 @@ func (r *UserMemoryRepo) GetAll(ctx context.Context) ([]*biz.User, error) {
 }
 
 func (r *UserMemoryRepo) GetUserByEmail(ctx context.Context, email string) (*biz.User, error) {
+	r.log.WithContext(ctx).Infof("GetUserByEmail: %v", email)
 	r.lock.RLock()
 	defer r.lock.RUnlock()
 	for _, user := range r.store {
