@@ -3,10 +3,8 @@ package biz
 import (
 	"context"
 	"fmt"
-	"regexp"
-	"time"
-
 	"github.com/soraQaQ/blog/pkg/util"
+	"regexp"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/soraQaQ/blog/pkg/errors"
@@ -52,7 +50,7 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (err error) {
 	uc.log.Debugf("hash password: %v", hashPassword)
 	uc.log.Debugf("user: %v", user)
 	newUser := &User{
-		Id:       uint64(time.Now().UnixNano()),
+		Id:       user.Id,
 		Username: user.Username,
 		Nickname: user.Nickname,
 		Password: hashPassword,
@@ -89,24 +87,6 @@ func (uc *UserUsecase) GetAllUsers(ctx context.Context) (users []*User, err erro
 }
 
 func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User, updateFn func(context.Context, *User) (*User, error)) (err error) {
-	//if err = validateUser(user); err != nil {
-	//	return err
-	//}
-
-	oldUser, err := uc.GetUser(ctx, user.Id)
-	if err != nil {
-		uc.log.WithContext(ctx).Errorf("userUsecase.UpdateUser: %v", err)
-		return errors.ErrUserNotFound
-	}
-
-	user = &User{
-		Id:       user.Id,
-		Username: user.Username,
-		Nickname: user.Nickname,
-		Password: oldUser.Password,
-		Email:    oldUser.Email,
-	}
-
 	err = uc.repo.Update(ctx, user, updateFn)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("userUsecase.UpdateUser: %v", err)
@@ -160,4 +140,29 @@ func validateEmail(email string) error {
 	}
 
 	return nil
+}
+
+func (u *User) UpdateUserName(userName string) error {
+	if userName == "" {
+		return errors.ErrInvalidUsername
+	}
+	u.Username = userName
+	return nil
+}
+
+func (u *User) UpdateNickName(nickName string) error {
+	if nickName == "" {
+		return errors.ErrInvalidNickName
+	}
+	u.Nickname = nickName
+	return nil
+}
+
+func (u *User) UpdatePassword(password string) error {
+	hashPassword, err := util.HashPassword(password)
+	if err != nil {
+		return err
+	}
+	u.Password = hashPassword
+	return err
 }

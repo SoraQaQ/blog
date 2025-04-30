@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.1
-// source: api/article/v1/article.proto
+// source: article/v1/article.proto
 
 package v1
 
@@ -32,11 +32,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticleServiceClient interface {
-	CreateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetAllArticle(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllArticleReply, error)
 	GetArticleById(ctx context.Context, in *GetArticleByIdRequest, opts ...grpc.CallOption) (*GetArticleByIdReply, error)
 	GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*GetArticlesByTagReply, error)
-	UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -48,7 +48,7 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 	return &articleServiceClient{cc}
 }
 
-func (c *articleServiceClient) CreateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *articleServiceClient) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ArticleService_CreateArticle_FullMethodName, in, out, cOpts...)
@@ -88,7 +88,7 @@ func (c *articleServiceClient) GetArticlesByTag(ctx context.Context, in *GetArti
 	return out, nil
 }
 
-func (c *articleServiceClient) UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *articleServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ArticleService_UpdateArticle_FullMethodName, in, out, cOpts...)
@@ -112,11 +112,11 @@ func (c *articleServiceClient) DeleteArticle(ctx context.Context, in *DeleteArti
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility.
 type ArticleServiceServer interface {
-	CreateArticle(context.Context, *Article) (*emptypb.Empty, error)
+	CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error)
 	GetAllArticle(context.Context, *emptypb.Empty) (*GetAllArticleReply, error)
 	GetArticleById(context.Context, *GetArticleByIdRequest) (*GetArticleByIdReply, error)
 	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*GetArticlesByTagReply, error)
-	UpdateArticle(context.Context, *Article) (*emptypb.Empty, error)
+	UpdateArticle(context.Context, *UpdateArticleRequest) (*emptypb.Empty, error)
 	DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
@@ -128,7 +128,7 @@ type ArticleServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedArticleServiceServer struct{}
 
-func (UnimplementedArticleServiceServer) CreateArticle(context.Context, *Article) (*emptypb.Empty, error) {
+func (UnimplementedArticleServiceServer) CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
 }
 func (UnimplementedArticleServiceServer) GetAllArticle(context.Context, *emptypb.Empty) (*GetAllArticleReply, error) {
@@ -140,7 +140,7 @@ func (UnimplementedArticleServiceServer) GetArticleById(context.Context, *GetArt
 func (UnimplementedArticleServiceServer) GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*GetArticlesByTagReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticlesByTag not implemented")
 }
-func (UnimplementedArticleServiceServer) UpdateArticle(context.Context, *Article) (*emptypb.Empty, error) {
+func (UnimplementedArticleServiceServer) UpdateArticle(context.Context, *UpdateArticleRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
 }
 func (UnimplementedArticleServiceServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error) {
@@ -168,7 +168,7 @@ func RegisterArticleServiceServer(s grpc.ServiceRegistrar, srv ArticleServiceSer
 }
 
 func _ArticleService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Article)
+	in := new(CreateArticleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func _ArticleService_CreateArticle_Handler(srv interface{}, ctx context.Context,
 		FullMethod: ArticleService_CreateArticle_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).CreateArticle(ctx, req.(*Article))
+		return srv.(ArticleServiceServer).CreateArticle(ctx, req.(*CreateArticleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -240,7 +240,7 @@ func _ArticleService_GetArticlesByTag_Handler(srv interface{}, ctx context.Conte
 }
 
 func _ArticleService_UpdateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Article)
+	in := new(UpdateArticleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func _ArticleService_UpdateArticle_Handler(srv interface{}, ctx context.Context,
 		FullMethod: ArticleService_UpdateArticle_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).UpdateArticle(ctx, req.(*Article))
+		return srv.(ArticleServiceServer).UpdateArticle(ctx, req.(*UpdateArticleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -308,5 +308,5 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/article/v1/article.proto",
+	Metadata: "article/v1/article.proto",
 }

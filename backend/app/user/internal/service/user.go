@@ -41,8 +41,17 @@ func (s *UserService) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequ
 			UserName: req.UserName,
 			NickName: req.NickName,
 		}),
-		func(ctx context.Context, user *biz.User) (*biz.User, error) {
-			return user, nil
+		func(ctx context.Context, oldUser *biz.User) (*biz.User, error) {
+			if err := oldUser.UpdateUserName(req.UserName); err != nil {
+				return nil, err
+			}
+			if err := oldUser.UpdateNickName(req.NickName); err != nil {
+				return nil, err
+			}
+			if err := oldUser.UpdatePassword(req.Password); err != nil {
+				return nil, err
+			}
+			return oldUser, nil
 		},
 	)
 	if err != nil {
@@ -61,7 +70,7 @@ func (s *UserService) CreateUser(ctx context.Context, user *userpb.CreateUserReq
 		s.log.Errorf("CreateUser 失败: %v", err)
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
-	
+
 	return &emptypb.Empty{}, nil
 }
 

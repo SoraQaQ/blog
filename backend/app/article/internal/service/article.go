@@ -21,9 +21,9 @@ func NewArticleService(uc *biz.ArticleUsecase, logger log.Logger) *ArticleServic
 	return &ArticleService{uc: uc, log: log.NewHelper(logger)}
 }
 
-func (s *ArticleService) CreateArticle(ctx context.Context, article *pb.Article) (_ *emptypb.Empty, err error) {
-	s.log.Infof("CreateArticle %+v", article)
-	err = s.uc.CreateArticle(ctx, dto.NewArticleConverter().ProtoToEntity(article))
+func (s *ArticleService) CreateArticle(ctx context.Context, req *pb.CreateArticleRequest) (_ *emptypb.Empty, err error) {
+	s.log.Infof("CreateArticle %+v", req.Article)
+	err = s.uc.CreateArticle(ctx, dto.NewArticleConverter().ProtoToEntity(req.Article))
 	if err != nil {
 		return
 	}
@@ -63,10 +63,17 @@ func (s *ArticleService) GetArticlesByTag(ctx context.Context, req *pb.GetArticl
 	return
 }
 
-func (s *ArticleService) UpdateArticle(ctx context.Context, article *pb.Article) (_ *emptypb.Empty, err error) {
-	s.log.Infof("UpdateArticle %+v", article)
-	err = s.uc.UpdateArticle(ctx, dto.NewArticleConverter().ProtoToEntity(article), func(ctx context.Context, article *biz.Article) (*biz.Article, error) {
-		return article, nil
+func (s *ArticleService) UpdateArticle(ctx context.Context, req *pb.UpdateArticleRequest) (_ *emptypb.Empty, err error) {
+	s.log.Infof("UpdateArticle %+v", req.Article)
+	err = s.uc.UpdateArticle(ctx, dto.NewArticleConverter().ProtoToEntity(req.Article), func(ctx context.Context, oldArticle *biz.Article) (*biz.Article, error) {
+		oldArticle.Tags = req.Article.Tags
+		oldArticle.Title = req.Article.Title
+		oldArticle.Summary = req.Article.Summary
+		oldArticle.Status = req.Article.Status
+		oldArticle.ViewCount = req.Article.ViewCount
+		oldArticle.ContentUrl = req.Article.ContentUrl
+		oldArticle.ImageUrl = req.Article.ImageUrl
+		return oldArticle, nil
 	})
 	if err != nil {
 		return

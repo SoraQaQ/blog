@@ -13,6 +13,7 @@ const (
 	ErrorReasonInvalidEmail    = "INVALID_EMAIL"
 	ErrorReasonEmailExist      = "EMAIL_EXIST"
 	ErrorReasonUserID          = "USER_ID_INVALID"
+	ErrorReasonInvalidNickName = "INVALID_NICK_NAME"
 )
 
 // 错误定义
@@ -24,6 +25,7 @@ var (
 	ErrInvalidEmail    = errors.New(400, ErrorReasonInvalidEmail, "邮箱格式不正确，请输入有效的邮箱地址")
 	ErrEmailExists     = errors.New(409, ErrorReasonEmailExist, "邮箱已存在")
 	ErrUserID          = errors.BadRequest(ErrorReasonUserID, "id错误")
+	ErrInvalidNickName = errors.BadRequest(ErrorReasonInvalidNickName, "昵称错误")
 )
 
 func WarpUserEmailError(err error, email string) error {

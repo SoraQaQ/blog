@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package user.v1;
 
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "api/user/v1;v1";
@@ -11,12 +10,7 @@ service UserService {
   rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
   rpc GetUser(GetUserRequest) returns (GetUserReply);
   rpc GetAllUser(google.protobuf.Empty) returns (GetUserAllReply);
-  rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      put: "api/v1/user/{id}",
-      body: "*",
-    };
-  }
+  rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty);
   rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailReply);
 }
 
@@ -53,6 +47,7 @@ message UpdateUserRequest {
   uint64 id = 1;
   string user_name = 2;
   string nick_name = 3;
+  string password = 4;
 }
 
 message GetUserByEmailReply {

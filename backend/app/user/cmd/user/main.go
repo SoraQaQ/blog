@@ -2,6 +2,11 @@ package main
 
 import (
 	"flag"
+	"github.com/go-kratos/kratos/v2/registry"
+	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/sdk/resource"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -10,11 +15,8 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/soraQaQ/blog/app/user/internal/conf"
 
-	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	"github.com/hashicorp/consul/api"
 	_ "go.uber.org/automaxprocs"
 )
 
@@ -34,13 +36,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
-	client, err := api.NewClient(api.DefaultConfig())
-	if err != nil {
-		panic(err)
-	}
-	reg := consul.New(client)
-
+func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -49,9 +45,8 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 		kratos.Logger(logger),
 		kratos.Server(
 			gs,
-			hs,
 		),
-		kratos.Registrar(reg),
+		kratos.Registrar(rr),
 	)
 }
 
@@ -82,7 +77,23 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	var rc conf.Registry
+	if err := c.Scan(&rc); err != nil {
+		panic(err)
+	}
+
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(bc.Trace.Endpoint)))
+	if err != nil {
+		panic(err)
+	}
+	tp := tracesdk.NewTracerProvider(
+		tracesdk.WithBatcher(exp),
+		tracesdk.WithResource(resource.NewSchemaless(
+			semconv.ServiceNameKey.String(Name),
+		)),
+	)
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, &rc, logger, tp)
 	if err != nil {
 		panic(err)
 	}

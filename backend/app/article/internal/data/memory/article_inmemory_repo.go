@@ -94,7 +94,7 @@ func (a *ArticleMemory) Update(ctx context.Context, article *biz.Article, update
 	for i, ar := range a.store {
 		if ar.Id == article.Id {
 			found = true
-			updateArticle, err := updateFn(ctx, article)
+			updateArticle, err := updateFn(ctx, ar)
 			if err != nil {
 				return err
 			}

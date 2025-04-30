@@ -2,6 +2,8 @@ package client
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/logging"
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -10,14 +12,14 @@ import (
 )
 
 // NewUserClient 创建用户服务客户端
-func NewUserClient() userpb.UserServiceClient {
+func NewUserClient(logger log.Logger) userpb.UserServiceClient {
 	client, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
 		panic(err)
 	}
 	dis := consul.New(client)
 	endpoint := "discovery:///user.service"
-	conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis))
+	conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis), grpc.WithMiddleware(logging.Server(logger)))
 	if err != nil {
 		panic(err)
 	}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package article.v1;
+
+import "errors/errors.proto";
+
+option go_package = "article/v1;v1";
+option java_multiple_files = true;
+
+
+enum ArticleErrorReason {
+  option (errors.default_code) = 500;
+
+  // 未知错误
+  UNKNOWN_ERROR = 0;
+  
+  // 文章不存在 - 使用 404 错误码
+  ARTICLE_NOT_FOUND = 1 [(errors.code) = 404];
+  
+  // 文章格式错误 - 使用 400 错误码
+  ARTICLE_INVALID = 2 [(errors.code) = 400];
+  
+  // 标签不能为空 - 使用 400 错误码
+  EMPTY_TAG = 3 [(errors.code) = 400];
+  
+  // 无效的文章ID - 使用 400 错误码
+  INVALID_ID = 4 [(errors.code) = 400];
+  
+  // 文章标题不能为空 - 使用 400 错误码
+  EMPTY_TITLE = 5 [(errors.code) = 400];
+  
+  // 文章摘要不能为空 - 使用 400 错误码
+  EMPTY_SUMMARY = 6 [(errors.code) = 400];
+  
+  // 文章内容URL不能为空 - 使用 400 错误码
+  EMPTY_CONTENT_URL = 7 [(errors.code) = 400];
+  
+  // 文章对象不能为空 - 使用 400 错误码
+  ARTICLE_NIL = 8 [(errors.code) = 400];
+  
+  // ID错误 - 使用 400 错误码
+  ARTICLE_ID_INVALID = 9 [(errors.code) = 400];
+}

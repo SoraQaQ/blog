@@ -8,6 +8,11 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
   Server server = 1;
   Data data = 2;
+  Trace trace = 3;
+}
+
+message Trace {
+  string endpoint = 1;
 }
 
 message Server {
@@ -23,6 +28,7 @@ message Server {
   }
   HTTP http = 1;
   GRPC grpc = 2;
+  string name = 3;
 }
 
 message Data {
@@ -38,4 +44,13 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+}
+
+message Registry {
+  message Consul {
+    string address = 1;
+    string scheme = 2;
+    bool health_check = 3;
+  }
+  Consul consul = 1;
 }

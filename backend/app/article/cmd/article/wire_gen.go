@@ -12,8 +12,10 @@ import (
 	"github.com/soraQaQ/blog/app/article/internal/biz"
 	"github.com/soraQaQ/blog/app/article/internal/conf"
 	"github.com/soraQaQ/blog/app/article/internal/data"
+	"github.com/soraQaQ/blog/app/article/internal/data/memory"
 	"github.com/soraQaQ/blog/app/article/internal/server"
 	"github.com/soraQaQ/blog/app/article/internal/service"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 import (
@@ -23,17 +25,18 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, tracerProvider *trace.TracerProvider, registry *conf.Registry) (*kratos.App, func(), error) {
+	articleMemory := memory.NewArticleMemoryRepo(logger)
+	dataData, cleanup, err := data.NewData(confData, logger, articleMemory)
 	if err != nil {
 		return nil, nil, err
 	}
 	articleRepo := data.NewArticleRepo(dataData, logger)
 	articleUsecase := biz.NewArticleUsecase(articleRepo, logger)
 	articleService := service.NewArticleService(articleUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, articleService, logger)
-	httpServer := server.NewHTTPServer(confServer, logger, articleService)
-	app := newApp(logger, grpcServer, httpServer)
+	grpcServer := server.NewGRPCServer(confServer, articleService, tracerProvider, logger)
+	registrar := server.NewRegister(registry)
+	app := newApp(logger, grpcServer, registrar)
 	return app, func() {
 		cleanup()
 	}, nil

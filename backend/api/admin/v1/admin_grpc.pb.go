@@ -20,10 +20,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AdminService_Login_FullMethodName    = "/admin.v1.AdminService/Login"
-	AdminService_Logout_FullMethodName   = "/admin.v1.AdminService/Logout"
-	AdminService_Register_FullMethodName = "/admin.v1.AdminService/Register"
-	AdminService_ListUser_FullMethodName = "/admin.v1.AdminService/ListUser"
+	AdminService_Login_FullMethodName            = "/admin.v1.AdminService/Login"
+	AdminService_Logout_FullMethodName           = "/admin.v1.AdminService/Logout"
+	AdminService_Register_FullMethodName         = "/admin.v1.AdminService/Register"
+	AdminService_ListUser_FullMethodName         = "/admin.v1.AdminService/ListUser"
+	AdminService_UpdateUser_FullMethodName       = "/admin.v1.AdminService/UpdateUser"
+	AdminService_CreateArticle_FullMethodName    = "/admin.v1.AdminService/CreateArticle"
+	AdminService_ListArticle_FullMethodName      = "/admin.v1.AdminService/ListArticle"
+	AdminService_GetArticleById_FullMethodName   = "/admin.v1.AdminService/GetArticleById"
+	AdminService_GetArticlesByTag_FullMethodName = "/admin.v1.AdminService/GetArticlesByTag"
+	AdminService_UpdateArticle_FullMethodName    = "/admin.v1.AdminService/UpdateArticle"
+	AdminService_DeleteArticle_FullMethodName    = "/admin.v1.AdminService/DeleteArticle"
 )
 
 // AdminServiceClient is the client API for AdminService service.
@@ -32,8 +39,15 @@ const (
 type AdminServiceClient interface {
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 	Logout(ctx context.Context, in *LogoutReq, opts ...grpc.CallOption) (*LogoutReply, error)
-	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReply, error)
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*SuccessReply, error)
 	ListUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListUserReply, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*SuccessReply, error)
+	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
+	ListArticle(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListArticleReply, error)
+	GetArticleById(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleReply, error)
+	GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*ListArticleReply, error)
+	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
+	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
 }
 
 type adminServiceClient struct {
@@ -64,9 +78,9 @@ func (c *adminServiceClient) Logout(ctx context.Context, in *LogoutReq, opts ...
 	return out, nil
 }
 
-func (c *adminServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterReply, error) {
+func (c *adminServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*SuccessReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterReply)
+	out := new(SuccessReply)
 	err := c.cc.Invoke(ctx, AdminService_Register_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -84,14 +98,91 @@ func (c *adminServiceClient) ListUser(ctx context.Context, in *emptypb.Empty, op
 	return out, nil
 }
 
+func (c *adminServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessReply)
+	err := c.cc.Invoke(ctx, AdminService_UpdateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessReply)
+	err := c.cc.Invoke(ctx, AdminService_CreateArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) ListArticle(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListArticleReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListArticleReply)
+	err := c.cc.Invoke(ctx, AdminService_ListArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) GetArticleById(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetArticleReply)
+	err := c.cc.Invoke(ctx, AdminService_GetArticleById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*ListArticleReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListArticleReply)
+	err := c.cc.Invoke(ctx, AdminService_GetArticlesByTag_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessReply)
+	err := c.cc.Invoke(ctx, AdminService_UpdateArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessReply)
+	err := c.cc.Invoke(ctx, AdminService_DeleteArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility.
 type AdminServiceServer interface {
 	Login(context.Context, *LoginReq) (*LoginReply, error)
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
-	Register(context.Context, *RegisterReq) (*RegisterReply, error)
+	Register(context.Context, *RegisterReq) (*SuccessReply, error)
 	ListUser(context.Context, *emptypb.Empty) (*ListUserReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*SuccessReply, error)
+	CreateArticle(context.Context, *CreateArticleRequest) (*SuccessReply, error)
+	ListArticle(context.Context, *emptypb.Empty) (*ListArticleReply, error)
+	GetArticleById(context.Context, *GetArticleRequest) (*GetArticleReply, error)
+	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*ListArticleReply, error)
+	UpdateArticle(context.Context, *UpdateArticleRequest) (*SuccessReply, error)
+	DeleteArticle(context.Context, *DeleteArticleRequest) (*SuccessReply, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -108,11 +199,32 @@ func (UnimplementedAdminServiceServer) Login(context.Context, *LoginReq) (*Login
 func (UnimplementedAdminServiceServer) Logout(context.Context, *LogoutReq) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedAdminServiceServer) Register(context.Context, *RegisterReq) (*RegisterReply, error) {
+func (UnimplementedAdminServiceServer) Register(context.Context, *RegisterReq) (*SuccessReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedAdminServiceServer) ListUser(context.Context, *emptypb.Empty) (*ListUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
+}
+func (UnimplementedAdminServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*SuccessReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedAdminServiceServer) CreateArticle(context.Context, *CreateArticleRequest) (*SuccessReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
+}
+func (UnimplementedAdminServiceServer) ListArticle(context.Context, *emptypb.Empty) (*ListArticleReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListArticle not implemented")
+}
+func (UnimplementedAdminServiceServer) GetArticleById(context.Context, *GetArticleRequest) (*GetArticleReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleById not implemented")
+}
+func (UnimplementedAdminServiceServer) GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*ListArticleReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticlesByTag not implemented")
+}
+func (UnimplementedAdminServiceServer) UpdateArticle(context.Context, *UpdateArticleRequest) (*SuccessReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
+}
+func (UnimplementedAdminServiceServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*SuccessReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 func (UnimplementedAdminServiceServer) testEmbeddedByValue()                      {}
@@ -207,6 +319,132 @@ func _AdminService_ListUser_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).CreateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_CreateArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).CreateArticle(ctx, req.(*CreateArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_ListArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).ListArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_ListArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).ListArticle(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_GetArticleById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetArticleById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_GetArticleById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetArticleById(ctx, req.(*GetArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_GetArticlesByTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticlesByTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetArticlesByTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_GetArticlesByTag_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetArticlesByTag(ctx, req.(*GetArticlesByTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_UpdateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).UpdateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_UpdateArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).UpdateArticle(ctx, req.(*UpdateArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_DeleteArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).DeleteArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_DeleteArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).DeleteArticle(ctx, req.(*DeleteArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +467,34 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUser",
 			Handler:    _AdminService_ListUser_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _AdminService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "CreateArticle",
+			Handler:    _AdminService_CreateArticle_Handler,
+		},
+		{
+			MethodName: "ListArticle",
+			Handler:    _AdminService_ListArticle_Handler,
+		},
+		{
+			MethodName: "GetArticleById",
+			Handler:    _AdminService_GetArticleById_Handler,
+		},
+		{
+			MethodName: "GetArticlesByTag",
+			Handler:    _AdminService_GetArticlesByTag_Handler,
+		},
+		{
+			MethodName: "UpdateArticle",
+			Handler:    _AdminService_UpdateArticle_Handler,
+		},
+		{
+			MethodName: "DeleteArticle",
+			Handler:    _AdminService_DeleteArticle_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

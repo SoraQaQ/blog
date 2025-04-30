@@ -28,10 +28,12 @@ init:
 .PHONY: config
 # generate internal proto
 config:
-	protoc --proto_path=./internal \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./internal \
-	       $(INTERNAL_PROTO_FILES)
+	for service in admin article user; do \
+		protoc --proto_path=./app/$$service/internal \
+		       --proto_path=./third_party \
+		       --go_out=paths=source_relative:./app/$$service/internal \
+		       ./app/$$service/internal/conf/conf.proto; \
+	done
 
 .PHONY: api
 # generate api proto
@@ -43,7 +45,8 @@ api:
 	       --go-grpc_out=paths=source_relative:./api \
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       ./api/admin/v1/*.proto \
-	       ./api/user/v1/*.proto
+	       ./api/user/v1/*.proto \
+	       ./api/article/v1/*.proto
 
 .PHONY: build
 # build

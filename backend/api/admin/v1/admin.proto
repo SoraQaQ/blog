@@ -23,7 +23,7 @@ service AdminService {
     };
   }
 
-  rpc Register(RegisterReq) returns(RegisterReply) {
+  rpc Register(RegisterReq) returns(SuccessReply) {
     option (google.api.http) = {
       post: "/api/v1/register",
       body: "*",
@@ -36,6 +36,51 @@ service AdminService {
     };
   }
 
+  rpc UpdateUser(UpdateUserRequest) returns(SuccessReply) {
+    option (google.api.http) = {
+      put: "/api/v1/user/{id}",
+      body: "*",
+    };
+  }
+
+  rpc CreateArticle(CreateArticleRequest) returns(SuccessReply) {
+    option (google.api.http) = {
+      post: "/api/v1/article"
+      body: "*",
+    };
+  }
+
+  rpc ListArticle(google.protobuf.Empty) returns(ListArticleReply) {
+    option (google.api.http) = {
+      get: "/api/v1/articles",
+    };
+  }
+
+  rpc GetArticleById(GetArticleRequest) returns(GetArticleReply) {
+    option (google.api.http) = {
+      get: "/api/v1/article/{id}",
+    };
+  }
+
+  rpc GetArticlesByTag(GetArticlesByTagRequest) returns(ListArticleReply) {
+    option (google.api.http) = {
+      get: "/api/v1/articles/bytag"
+    };
+  }
+
+  rpc UpdateArticle(UpdateArticleRequest) returns(SuccessReply) {
+    option(google.api.http) = {
+      put: "/api/v1/article/{article.id}",
+      body: "*"
+    };
+  }
+
+  rpc DeleteArticle(DeleteArticleRequest) returns(SuccessReply) {
+    option(google.api.http) = {
+      delete: "/api/v1/article/{id}"
+    };
+  }
+
 }
 
 message User{
@@ -45,6 +90,17 @@ message User{
   optional string nick_name = 4 [json_name = "nick_name"];
   optional string email = 5 [json_name = "email"];
   optional string token = 6;
+}
+
+message Article {
+  int64 id = 1;
+  string title = 2 [json_name = "title"];
+  string summary = 3 [json_name = "summary"];
+  string content_url = 4 [json_name = "content_url"];
+  int64 status = 5 [json_name = "status"];
+  int64 view_count = 6 [json_name = "view_count"];
+  string tags = 7 [json_name = "tags"];
+  repeated string image_url = 8;
 }
 
 message LoginReq {
@@ -82,3 +138,48 @@ message ListUserReply {
   int32 total = 2;
 }
 
+message UpdateUserRequest {
+  uint64 id = 1;
+  string user_name = 2;
+  string nick_name = 3;
+  string password = 4;
+}
+
+message UpdateUserReply {
+  string message = 1;
+  string success = 2;
+}
+
+message CreateArticleRequest {
+  Article article = 1;
+}
+
+message SuccessReply {
+  string message = 1;
+  string success = 2;
+}
+
+message ListArticleReply {
+  repeated Article items =1;
+  int32 total = 2;
+}
+
+message GetArticleRequest {
+ int64 id = 1;
+}
+
+message GetArticleReply {
+  Article article = 1;
+}
+
+message GetArticlesByTagRequest {
+  string tag = 1;
+}
+
+message UpdateArticleRequest {
+  Article article = 1;
+}
+
+message DeleteArticleRequest{
+  int64 id = 1;
+}

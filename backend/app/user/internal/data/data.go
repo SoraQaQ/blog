@@ -8,7 +8,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewUserRepo)
+var ProviderSet = wire.NewSet(NewData, NewUserRepo, memory.NewUserMemoryRepo)
 
 // Data .
 type Data struct {
@@ -17,10 +17,9 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	userMemory := memory.NewUserMemoryRepo(logger)
+func NewData(c *conf.Data, logger log.Logger, db *memory.UserMemoryRepo) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}
-	return &Data{db: userMemory}, cleanup, nil
+	return &Data{db: db}, cleanup, nil
 }

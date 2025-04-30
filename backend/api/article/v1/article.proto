@@ -4,47 +4,20 @@ package v1.article;
 
 option go_package = "api/article/v1;v1";
 
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 service ArticleService{
-  rpc CreateArticle(Article) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "api/v1/article",
-      body: "*",
-    };
-  }
+  rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty);
 
-  rpc GetAllArticle(google.protobuf.Empty) returns (GetAllArticleReply) {
-    option (google.api.http) = {
-      get: "api/v1/articles",
-    };
-  }
+  rpc GetAllArticle(google.protobuf.Empty) returns (GetAllArticleReply);
 
-  rpc GetArticleById(GetArticleByIdRequest) returns (GetArticleByIdReply) {
-    option (google.api.http) = {
-      get: "api/v1/article/{id}",
-    };
-  }
+  rpc GetArticleById(GetArticleByIdRequest) returns (GetArticleByIdReply);
 
-  rpc GetArticlesByTag(GetArticlesByTagRequest) returns (GetArticlesByTagReply) {
-    option (google.api.http) = {
-      get: "/api/v1/articles/bytag"
-    };
-  }
+  rpc GetArticlesByTag(GetArticlesByTagRequest) returns (GetArticlesByTagReply);
 
-  rpc UpdateArticle(Article) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      put: "api/v1/article/{id}",
-      body: "*",
-    };
-  }
+  rpc UpdateArticle(UpdateArticleRequest) returns (google.protobuf.Empty);
 
-  rpc DeleteArticle(DeleteArticleRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "api/v1/article/{id}",
-    };
-  }
+  rpc DeleteArticle(DeleteArticleRequest) returns (google.protobuf.Empty);
 }
 
 
@@ -57,6 +30,10 @@ message Article {
   int64 view_count = 6;
   string tags = 7;
   repeated string image_url = 8;
+}
+
+message CreateArticleRequest {
+  Article article = 1;
 }
 
 message GetAllArticleReply {
@@ -80,7 +57,10 @@ message GetArticlesByTagReply {
   repeated Article articles = 1;
 }
 
-
 message DeleteArticleRequest {
   int64 id = 1;
+}
+
+message UpdateArticleRequest{
+  Article article = 1;
 }

@@ -58,7 +58,7 @@ func (r *UserMemoryRepo) Update(ctx context.Context, user *biz.User, updateFn fu
 	for i, u := range r.store {
 		if u.Id == user.Id {
 			found = true
-			updateUser, err := updateFn(ctx, user)
+			updateUser, err := updateFn(ctx, u)
 			if err != nil {
 				return err
 			}
