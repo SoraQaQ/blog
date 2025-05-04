@@ -2,9 +2,8 @@ package data
 
 import (
 	"context"
-
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/article/internal/biz"
+	"github.com/soraQaQ/blog/app/article/internal/domain"
 )
 
 type ArticleRepo struct {
@@ -12,14 +11,14 @@ type ArticleRepo struct {
 	log  *log.Helper
 }
 
-func NewArticleRepo(data *Data, logger log.Logger) biz.ArticleRepo {
+func NewArticleRepo(data *Data, logger log.Logger) domain.ArticleRepo {
 	return &ArticleRepo{
 		data: data,
 		log:  log.NewHelper(logger),
 	}
 }
 
-func (a *ArticleRepo) Save(ctx context.Context, article *biz.Article) (err error) {
+func (a *ArticleRepo) Save(ctx context.Context, article *domain.Article) (err error) {
 	err = a.data.db.Save(ctx, article)
 	if err != nil {
 		return
@@ -27,7 +26,7 @@ func (a *ArticleRepo) Save(ctx context.Context, article *biz.Article) (err error
 	return
 }
 
-func (a *ArticleRepo) Update(ctx context.Context, article *biz.Article, f func(context.Context, *biz.Article) (*biz.Article, error)) error {
+func (a *ArticleRepo) Update(ctx context.Context, article *domain.Article, f func(context.Context, *domain.Article) (*domain.Article, error)) error {
 	err := a.data.db.Update(ctx, article, f)
 	if err != nil {
 		return err
@@ -35,7 +34,7 @@ func (a *ArticleRepo) Update(ctx context.Context, article *biz.Article, f func(c
 	return nil
 }
 
-func (a *ArticleRepo) GetAll(ctx context.Context) ([]*biz.Article, error) {
+func (a *ArticleRepo) GetAll(ctx context.Context) ([]*domain.Article, error) {
 	articles, err := a.data.db.GetAll(ctx)
 	if err != nil {
 		return nil, err
@@ -43,7 +42,7 @@ func (a *ArticleRepo) GetAll(ctx context.Context) ([]*biz.Article, error) {
 	return articles, nil
 }
 
-func (a *ArticleRepo) GetArticlesByTag(ctx context.Context, s string) ([]*biz.Article, error) {
+func (a *ArticleRepo) GetArticlesByTag(ctx context.Context, s string) ([]*domain.Article, error) {
 	articles, err := a.data.db.GetArticlesByTag(ctx, s)
 	if err != nil {
 		return nil, err
@@ -51,7 +50,7 @@ func (a *ArticleRepo) GetArticlesByTag(ctx context.Context, s string) ([]*biz.Ar
 	return articles, nil
 }
 
-func (a *ArticleRepo) Get(ctx context.Context, i int64) (*biz.Article, error) {
+func (a *ArticleRepo) Get(ctx context.Context, i int64) (*domain.Article, error) {
 	article, err := a.data.db.Get(ctx, i)
 	if err != nil {
 		return nil, err

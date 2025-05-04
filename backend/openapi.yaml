@@ -20,10 +20,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/admin.v1.SuccessReply'
+                    content: {}
     /api/v1/article/{article.id}:
         put:
             tags:
@@ -44,10 +41,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/admin.v1.SuccessReply'
+                    content: {}
     /api/v1/article/{id}:
         get:
             tags:
@@ -79,10 +73,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/admin.v1.SuccessReply'
+                    content: {}
     /api/v1/articles:
         get:
             tags:
@@ -162,10 +153,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/admin.v1.SuccessReply'
+                    content: {}
     /api/v1/user/{id}:
         put:
             tags:
@@ -186,10 +174,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/admin.v1.SuccessReply'
+                    content: {}
     /api/v1/users:
         get:
             tags:
@@ -289,13 +274,6 @@ components:
                 email:
                     type: string
                 nickname:
-                    type: string
-        admin.v1.SuccessReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                success:
                     type: string
         admin.v1.UpdateArticleRequest:
             type: object

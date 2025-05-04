@@ -33,17 +33,17 @@ const OperationAdminServiceUpdateArticle = "/admin.v1.AdminService/UpdateArticle
 const OperationAdminServiceUpdateUser = "/admin.v1.AdminService/UpdateUser"
 
 type AdminServiceHTTPServer interface {
-	CreateArticle(context.Context, *CreateArticleRequest) (*SuccessReply, error)
-	DeleteArticle(context.Context, *DeleteArticleRequest) (*SuccessReply, error)
+	CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error)
+	DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error)
 	GetArticleById(context.Context, *GetArticleRequest) (*GetArticleReply, error)
 	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*ListArticleReply, error)
 	ListArticle(context.Context, *emptypb.Empty) (*ListArticleReply, error)
 	ListUser(context.Context, *emptypb.Empty) (*ListUserReply, error)
 	Login(context.Context, *LoginReq) (*LoginReply, error)
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
-	Register(context.Context, *RegisterReq) (*SuccessReply, error)
-	UpdateArticle(context.Context, *UpdateArticleRequest) (*SuccessReply, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*SuccessReply, error)
+	Register(context.Context, *RegisterReq) (*emptypb.Empty, error)
+	UpdateArticle(context.Context, *UpdateArticleRequest) (*emptypb.Empty, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 }
 
 func RegisterAdminServiceHTTPServer(s *http.Server, srv AdminServiceHTTPServer) {
@@ -122,7 +122,7 @@ func _AdminService_Register0_HTTP_Handler(srv AdminServiceHTTPServer) func(ctx h
 		if err != nil {
 			return err
 		}
-		reply := out.(*SuccessReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -166,7 +166,7 @@ func _AdminService_UpdateUser0_HTTP_Handler(srv AdminServiceHTTPServer) func(ctx
 		if err != nil {
 			return err
 		}
-		reply := out.(*SuccessReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -188,7 +188,7 @@ func _AdminService_CreateArticle0_HTTP_Handler(srv AdminServiceHTTPServer) func(
 		if err != nil {
 			return err
 		}
-		reply := out.(*SuccessReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -273,7 +273,7 @@ func _AdminService_UpdateArticle0_HTTP_Handler(srv AdminServiceHTTPServer) func(
 		if err != nil {
 			return err
 		}
-		reply := out.(*SuccessReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -295,23 +295,23 @@ func _AdminService_DeleteArticle0_HTTP_Handler(srv AdminServiceHTTPServer) func(
 		if err != nil {
 			return err
 		}
-		reply := out.(*SuccessReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type AdminServiceHTTPClient interface {
-	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http.CallOption) (rsp *SuccessReply, err error)
-	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http.CallOption) (rsp *SuccessReply, err error)
+	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetArticleById(ctx context.Context, req *GetArticleRequest, opts ...http.CallOption) (rsp *GetArticleReply, err error)
 	GetArticlesByTag(ctx context.Context, req *GetArticlesByTagRequest, opts ...http.CallOption) (rsp *ListArticleReply, err error)
 	ListArticle(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *ListArticleReply, err error)
 	ListUser(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *ListUserReply, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginReply, err error)
 	Logout(ctx context.Context, req *LogoutReq, opts ...http.CallOption) (rsp *LogoutReply, err error)
-	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *SuccessReply, err error)
-	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http.CallOption) (rsp *SuccessReply, err error)
-	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *SuccessReply, err error)
+	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type AdminServiceHTTPClientImpl struct {
@@ -322,8 +322,8 @@ func NewAdminServiceHTTPClient(client *http.Client) AdminServiceHTTPClient {
 	return &AdminServiceHTTPClientImpl{client}
 }
 
-func (c *AdminServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...http.CallOption) (*SuccessReply, error) {
-	var out SuccessReply
+func (c *AdminServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/article"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAdminServiceCreateArticle))
@@ -335,8 +335,8 @@ func (c *AdminServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *Crea
 	return &out, nil
 }
 
-func (c *AdminServiceHTTPClientImpl) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...http.CallOption) (*SuccessReply, error) {
-	var out SuccessReply
+func (c *AdminServiceHTTPClientImpl) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/article/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationAdminServiceDeleteArticle))
@@ -426,8 +426,8 @@ func (c *AdminServiceHTTPClientImpl) Logout(ctx context.Context, in *LogoutReq, 
 	return &out, nil
 }
 
-func (c *AdminServiceHTTPClientImpl) Register(ctx context.Context, in *RegisterReq, opts ...http.CallOption) (*SuccessReply, error) {
-	var out SuccessReply
+func (c *AdminServiceHTTPClientImpl) Register(ctx context.Context, in *RegisterReq, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/register"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAdminServiceRegister))
@@ -439,8 +439,8 @@ func (c *AdminServiceHTTPClientImpl) Register(ctx context.Context, in *RegisterR
 	return &out, nil
 }
 
-func (c *AdminServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...http.CallOption) (*SuccessReply, error) {
-	var out SuccessReply
+func (c *AdminServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/article/{article.id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAdminServiceUpdateArticle))
@@ -452,8 +452,8 @@ func (c *AdminServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *Upda
 	return &out, nil
 }
 
-func (c *AdminServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*SuccessReply, error) {
-	var out SuccessReply
+func (c *AdminServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationAdminServiceUpdateUser))

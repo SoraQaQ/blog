@@ -23,7 +23,7 @@ service AdminService {
     };
   }
 
-  rpc Register(RegisterReq) returns(SuccessReply) {
+  rpc Register(RegisterReq) returns(google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/register",
       body: "*",
@@ -36,14 +36,14 @@ service AdminService {
     };
   }
 
-  rpc UpdateUser(UpdateUserRequest) returns(SuccessReply) {
+  rpc UpdateUser(UpdateUserRequest) returns(google.protobuf.Empty) {
     option (google.api.http) = {
       put: "/api/v1/user/{id}",
       body: "*",
     };
   }
 
-  rpc CreateArticle(CreateArticleRequest) returns(SuccessReply) {
+  rpc CreateArticle(CreateArticleRequest) returns(google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/article"
       body: "*",
@@ -68,14 +68,14 @@ service AdminService {
     };
   }
 
-  rpc UpdateArticle(UpdateArticleRequest) returns(SuccessReply) {
+  rpc UpdateArticle(UpdateArticleRequest) returns(google.protobuf.Empty) {
     option(google.api.http) = {
       put: "/api/v1/article/{article.id}",
       body: "*"
     };
   }
 
-  rpc DeleteArticle(DeleteArticleRequest) returns(SuccessReply) {
+  rpc DeleteArticle(DeleteArticleRequest) returns(google.protobuf.Empty) {
     option(google.api.http) = {
       delete: "/api/v1/article/{id}"
     };
@@ -128,11 +128,6 @@ message RegisterReq {
   string nickname = 4;
 }
 
-message RegisterReply {
-  string message = 1;
-  string success = 2;
-}
-
 message ListUserReply {
   repeated User items = 1;
   int32 total = 2;
@@ -152,11 +147,6 @@ message UpdateUserReply {
 
 message CreateArticleRequest {
   Article article = 1;
-}
-
-message SuccessReply {
-  string message = 1;
-  string success = 2;
 }
 
 message ListArticleReply {

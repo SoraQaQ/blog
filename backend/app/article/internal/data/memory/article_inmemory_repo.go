@@ -2,21 +2,21 @@ package memory
 
 import (
 	"context"
+	"github.com/soraQaQ/blog/app/article/internal/domain"
 	"sync"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/article/internal/biz"
 	"github.com/soraQaQ/blog/pkg/errors"
 )
 
 type ArticleMemory struct {
-	store []*biz.Article
+	store []*domain.Article
 	log   *log.Helper
 	lock  *sync.RWMutex
 }
 
 func NewArticleMemoryRepo(logger log.Logger) *ArticleMemory {
-	s := make([]*biz.Article, 0)
+	s := make([]*domain.Article, 0)
 	return &ArticleMemory{
 		store: s,
 		log:   log.NewHelper(logger),
@@ -24,10 +24,10 @@ func NewArticleMemoryRepo(logger log.Logger) *ArticleMemory {
 	}
 }
 
-func (a *ArticleMemory) Save(ctx context.Context, article *biz.Article) error {
+func (a *ArticleMemory) Save(ctx context.Context, article *domain.Article) error {
 	a.lock.Lock()
 	defer a.lock.Unlock()
-	newArticle := &biz.Article{
+	newArticle := &domain.Article{
 		Id:         article.Id,
 		Title:      article.Title,
 		Summary:    article.Summary,
@@ -37,11 +37,10 @@ func (a *ArticleMemory) Save(ctx context.Context, article *biz.Article) error {
 		ImageUrl:   article.ImageUrl,
 	}
 	a.store = append(a.store, newArticle)
-	a.log.Infof("create article %+v", newArticle)
 	return nil
 }
 
-func (a *ArticleMemory) Get(ctx context.Context, id int64) (*biz.Article, error) {
+func (a *ArticleMemory) Get(ctx context.Context, id int64) (*domain.Article, error) {
 	a.lock.RLock()
 	defer a.lock.RUnlock()
 	for _, article := range a.store {
@@ -52,16 +51,16 @@ func (a *ArticleMemory) Get(ctx context.Context, id int64) (*biz.Article, error)
 	return nil, errors.ErrorArticleNotFound
 }
 
-func (a *ArticleMemory) GetAll(ctx context.Context) ([]*biz.Article, error) {
+func (a *ArticleMemory) GetAll(ctx context.Context) ([]*domain.Article, error) {
 	a.lock.RLock()
 	defer a.lock.RUnlock()
 	return a.store, nil
 }
 
-func (a *ArticleMemory) GetArticlesByTag(ctx context.Context, s string) ([]*biz.Article, error) {
+func (a *ArticleMemory) GetArticlesByTag(ctx context.Context, s string) ([]*domain.Article, error) {
 	a.lock.RLock()
 	defer a.lock.RUnlock()
-	articles := make([]*biz.Article, 0)
+	articles := make([]*domain.Article, 0)
 	for _, article := range a.store {
 		if article.Tags == s {
 			articles = append(articles, article)
@@ -87,7 +86,7 @@ func (a *ArticleMemory) Delete(ctx context.Context, id int64) error {
 
 }
 
-func (a *ArticleMemory) Update(ctx context.Context, article *biz.Article, updateFn func(context.Context, *biz.Article) (*biz.Article, error)) error {
+func (a *ArticleMemory) Update(ctx context.Context, article *domain.Article, updateFn func(context.Context, *domain.Article) (*domain.Article, error)) error {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 	found := false
