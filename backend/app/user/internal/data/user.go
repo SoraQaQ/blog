@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
+	"github.com/soraQaQ/blog/app/user/internal/domain"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/user/internal/biz"
 )
 
 type UserRepo struct {
@@ -12,11 +12,11 @@ type UserRepo struct {
 	log  *log.Helper
 }
 
-func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
+func NewUserRepo(data *Data, logger log.Logger) domain.UserRepo {
 	return &UserRepo{data: data, log: log.NewHelper(logger)}
 }
 
-func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *biz.User, err error) {
+func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *domain.User, err error) {
 	user, err = u.data.db.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (u *UserRepo) GetUserByEmail(ctx context.Context, email string) (user *biz.
 	return user, nil
 }
 
-func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
+func (u *UserRepo) Save(ctx context.Context, user *domain.User) (err error) {
 	err = u.data.db.Save(ctx, user)
 	if err != nil {
 		return
@@ -32,7 +32,7 @@ func (u *UserRepo) Save(ctx context.Context, user *biz.User) (err error) {
 	return
 }
 
-func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err error) {
+func (u *UserRepo) Get(ctx context.Context, id uint64) (user *domain.User, err error) {
 	user, err = u.data.db.Get(ctx, id)
 	if err != nil {
 		return
@@ -40,7 +40,7 @@ func (u *UserRepo) Get(ctx context.Context, id uint64) (user *biz.User, err erro
 	return
 }
 
-func (u *UserRepo) Update(ctx context.Context, user *biz.User, fn func(context.Context, *biz.User) (*biz.User, error)) (err error) {
+func (u *UserRepo) Update(ctx context.Context, user *domain.User, fn func(context.Context, *domain.User) (*domain.User, error)) (err error) {
 	err = u.data.db.Update(ctx, user, fn)
 	if err != nil {
 		return
@@ -48,6 +48,6 @@ func (u *UserRepo) Update(ctx context.Context, user *biz.User, fn func(context.C
 	return nil
 }
 
-func (u *UserRepo) GetAll(ctx context.Context) ([]*biz.User, error) {
+func (u *UserRepo) GetAll(ctx context.Context) ([]*domain.User, error) {
 	return u.data.db.GetAll(ctx)
 }

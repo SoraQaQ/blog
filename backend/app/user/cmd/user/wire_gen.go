@@ -9,7 +9,8 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/user/internal/biz"
+	"github.com/soraQaQ/blog/app/user/internal/biz/command"
+	"github.com/soraQaQ/blog/app/user/internal/biz/query"
 	"github.com/soraQaQ/blog/app/user/internal/conf"
 	"github.com/soraQaQ/blog/app/user/internal/data"
 	"github.com/soraQaQ/blog/app/user/internal/data/memory"
@@ -32,8 +33,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Regist
 		return nil, nil, err
 	}
 	userRepo := data.NewUserRepo(dataData, logger)
-	userUsecase := biz.NewUserUsecase(userRepo, logger)
-	userService := service.NewUserService(userUsecase, logger)
+	createUserHandler := command.NewCreateUserHandler(logger, userRepo)
+	updateUserHandler := command.NewUpdateUserHandler(logger, userRepo)
+	getUserHandler := query.NewGetUserHandler(logger, userRepo)
+	getAllUserHandler := query.NewGetAllUserHandler(logger, userRepo)
+	getUsersByEmailHandler := query.NewGetUserByEmailHandler(logger, userRepo)
+	userService := service.NewUserService(createUserHandler, updateUserHandler, getUserHandler, getAllUserHandler, getUsersByEmailHandler, logger)
 	grpcServer := server.NewGRPCServer(confServer, userService, logger, tracerProvider)
 	registrar := server.NewRegister(registry)
 	app := newApp(logger, grpcServer, registrar)

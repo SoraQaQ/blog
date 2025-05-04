@@ -9,7 +9,8 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/soraQaQ/blog/app/article/internal/biz"
+	"github.com/soraQaQ/blog/app/article/internal/biz/command"
+	"github.com/soraQaQ/blog/app/article/internal/biz/query"
 	"github.com/soraQaQ/blog/app/article/internal/conf"
 	"github.com/soraQaQ/blog/app/article/internal/data"
 	"github.com/soraQaQ/blog/app/article/internal/data/memory"
@@ -32,8 +33,13 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, tr
 		return nil, nil, err
 	}
 	articleRepo := data.NewArticleRepo(dataData, logger)
-	articleUsecase := biz.NewArticleUsecase(articleRepo, logger)
-	articleService := service.NewArticleService(articleUsecase, logger)
+	createArticleHandler := command.NewCreateOrderHandler(articleRepo, logger)
+	updateArticleHandler := command.NewUpdateArticleHandler(logger, articleRepo)
+	deleteArticleHandler := command.NewDeleteArticleHandler(articleRepo, logger)
+	getArticleHandler := query.NewGetArticleHandler(articleRepo, logger)
+	getAllArticlesHandler := query.NewGetAllArticleHandler(articleRepo, logger)
+	getArticlesByTagHandler := query.NewGetArticlesByTagHandler(articleRepo, logger)
+	articleService := service.NewArticleService(logger, createArticleHandler, updateArticleHandler, deleteArticleHandler, getArticleHandler, getAllArticlesHandler, getArticlesByTagHandler)
 	grpcServer := server.NewGRPCServer(confServer, articleService, tracerProvider, logger)
 	registrar := server.NewRegister(registry)
 	app := newApp(logger, grpcServer, registrar)

@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/v2/registry"
+
 	"go.opentelemetry.io/otel/exporters/jaeger"
+
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"

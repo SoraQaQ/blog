@@ -39,15 +39,15 @@ const (
 type AdminServiceClient interface {
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginReply, error)
 	Logout(ctx context.Context, in *LogoutReq, opts ...grpc.CallOption) (*LogoutReply, error)
-	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*SuccessReply, error)
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListUserReply, error)
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*SuccessReply, error)
-	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListArticle(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListArticleReply, error)
 	GetArticleById(ctx context.Context, in *GetArticleRequest, opts ...grpc.CallOption) (*GetArticleReply, error)
 	GetArticlesByTag(ctx context.Context, in *GetArticlesByTagRequest, opts ...grpc.CallOption) (*ListArticleReply, error)
-	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
-	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error)
+	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type adminServiceClient struct {
@@ -78,9 +78,9 @@ func (c *adminServiceClient) Logout(ctx context.Context, in *LogoutReq, opts ...
 	return out, nil
 }
 
-func (c *adminServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*SuccessReply, error) {
+func (c *adminServiceClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SuccessReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AdminService_Register_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -98,9 +98,9 @@ func (c *adminServiceClient) ListUser(ctx context.Context, in *emptypb.Empty, op
 	return out, nil
 }
 
-func (c *adminServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+func (c *adminServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SuccessReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AdminService_UpdateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -108,9 +108,9 @@ func (c *adminServiceClient) UpdateUser(ctx context.Context, in *UpdateUserReque
 	return out, nil
 }
 
-func (c *adminServiceClient) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+func (c *adminServiceClient) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SuccessReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AdminService_CreateArticle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -148,9 +148,9 @@ func (c *adminServiceClient) GetArticlesByTag(ctx context.Context, in *GetArticl
 	return out, nil
 }
 
-func (c *adminServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+func (c *adminServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SuccessReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AdminService_UpdateArticle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -158,9 +158,9 @@ func (c *adminServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticl
 	return out, nil
 }
 
-func (c *adminServiceClient) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*SuccessReply, error) {
+func (c *adminServiceClient) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SuccessReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AdminService_DeleteArticle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -174,15 +174,15 @@ func (c *adminServiceClient) DeleteArticle(ctx context.Context, in *DeleteArticl
 type AdminServiceServer interface {
 	Login(context.Context, *LoginReq) (*LoginReply, error)
 	Logout(context.Context, *LogoutReq) (*LogoutReply, error)
-	Register(context.Context, *RegisterReq) (*SuccessReply, error)
+	Register(context.Context, *RegisterReq) (*emptypb.Empty, error)
 	ListUser(context.Context, *emptypb.Empty) (*ListUserReply, error)
-	UpdateUser(context.Context, *UpdateUserRequest) (*SuccessReply, error)
-	CreateArticle(context.Context, *CreateArticleRequest) (*SuccessReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
+	CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error)
 	ListArticle(context.Context, *emptypb.Empty) (*ListArticleReply, error)
 	GetArticleById(context.Context, *GetArticleRequest) (*GetArticleReply, error)
 	GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*ListArticleReply, error)
-	UpdateArticle(context.Context, *UpdateArticleRequest) (*SuccessReply, error)
-	DeleteArticle(context.Context, *DeleteArticleRequest) (*SuccessReply, error)
+	UpdateArticle(context.Context, *UpdateArticleRequest) (*emptypb.Empty, error)
+	DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -199,16 +199,16 @@ func (UnimplementedAdminServiceServer) Login(context.Context, *LoginReq) (*Login
 func (UnimplementedAdminServiceServer) Logout(context.Context, *LogoutReq) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
-func (UnimplementedAdminServiceServer) Register(context.Context, *RegisterReq) (*SuccessReply, error) {
+func (UnimplementedAdminServiceServer) Register(context.Context, *RegisterReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedAdminServiceServer) ListUser(context.Context, *emptypb.Empty) (*ListUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
 }
-func (UnimplementedAdminServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*SuccessReply, error) {
+func (UnimplementedAdminServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedAdminServiceServer) CreateArticle(context.Context, *CreateArticleRequest) (*SuccessReply, error) {
+func (UnimplementedAdminServiceServer) CreateArticle(context.Context, *CreateArticleRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
 }
 func (UnimplementedAdminServiceServer) ListArticle(context.Context, *emptypb.Empty) (*ListArticleReply, error) {
@@ -220,10 +220,10 @@ func (UnimplementedAdminServiceServer) GetArticleById(context.Context, *GetArtic
 func (UnimplementedAdminServiceServer) GetArticlesByTag(context.Context, *GetArticlesByTagRequest) (*ListArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticlesByTag not implemented")
 }
-func (UnimplementedAdminServiceServer) UpdateArticle(context.Context, *UpdateArticleRequest) (*SuccessReply, error) {
+func (UnimplementedAdminServiceServer) UpdateArticle(context.Context, *UpdateArticleRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
 }
-func (UnimplementedAdminServiceServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*SuccessReply, error) {
+func (UnimplementedAdminServiceServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
